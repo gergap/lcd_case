@@ -59,8 +59,10 @@ module nut_trap(w = 5.5, h = 3) {
 module nut_trap_cube(W=10, H=5) {
     difference() {
         cube([W,W,H], center=true);
-        translate([0,-W/2,0]) cube([6.5,W,3], center=true);
-        nut_trap();
+        union() {
+            translate([0,-W/2,0]) cube([5.5+0.1,W,3], center=true);
+            rotate([0,0,30]) nut_trap();
+        }
         cylinder(6,r=1.5, center=true);
     }
 }
@@ -80,9 +82,9 @@ module bottom() {
         // PCB mounting nut traps
         translate([0,PCB_OFFSET_Y,0]) {
             translate([-xoff,-yoff,1]) rotate([0,0,90]) nut_trap_cube(10, 5);
-            translate([ xoff,-yoff,1]) rotate([0,0,90]) nut_trap_cube(10, 5);
+            translate([ xoff,-yoff,1]) rotate([0,0,-90]) nut_trap_cube(10, 5);
             translate([-xoff, yoff,1]) rotate([0,0,90]) nut_trap_cube(10, 5);
-            translate([ xoff, yoff,1]) rotate([0,0,90]) nut_trap_cube(10, 5);
+            translate([ xoff, yoff,1]) rotate([0,0,-90]) nut_trap_cube(10, 5);
         }
     }
 }
@@ -145,6 +147,7 @@ module lcd_pcb() {
     }
 }
 
+// the LCD module
 module lcd() {
     xoff=(LCD_WIDTH-PCB_WIDTH)/2+LCD_PCB_OFFSET_X+LCD_OFFSET_X;
     yoff=(PCB_HEIGHT-LCD_HEIGHT)/2-LCD_PCB_OFFSET_Y-LCD_OFFSET_Y;
@@ -152,22 +155,26 @@ module lcd() {
     color("gray") translate([xoff,yoff,zoff]) cube([LCD_WIDTH, LCD_HEIGHT, LCD_THICKNESS], center=true);
 }
 
-// complete LCD display
+// complete LCD display including PCB
 module lcd_display() {
     main_pcb();
     lcd_pcb();
     lcd();
 }
 
+// bottom part
 translate([0,0,-explode*30]) difference() {
     bottom();
     translate([0,PCB_OFFSET_Y,0]) lcd_display();
 }
+
+// top part
 translate([0,0,explode*30]) difference() {
     top();
     translate([0,PCB_OFFSET_Y,0]) lcd_display();
 }
 
+// LCD display
 if (show_lcd) {
     translate([0,PCB_OFFSET_Y,0]) lcd_display();
 }
