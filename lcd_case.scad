@@ -205,22 +205,25 @@ module lcd_display() {
 }
 
 // bottom part
+module bottom_stl() {
+    difference() {
+        bottom();
+        translate([0,PCB_OFFSET_Y,0]) lcd_display();
+    }
+}
 if (show_bottom) {
-    /*intersection() {*/
-        translate([0,0,-explode*30]) difference() {
-            bottom();
-            translate([0,PCB_OFFSET_Y,0]) lcd_display();
-        }
-    /*    translate([-WIDTH/2,-HEIGHT/2,0]) cube([50,50,50], center=true);
-    }*/
+    translate([0,0,-explode*30]) bottom_stl();
 }
 
 // top part
-if (show_top) {
-    translate([0,0,explode*30]) difference() {
+module top_stl() {
+    difference() {
         top();
         translate([0,PCB_OFFSET_Y,0]) lcd_display();
     }
+}
+if (show_top) {
+    translate([0,0,explode*30]) top_stl();
 }
 
 // LCD display

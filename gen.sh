@@ -1,3 +1,7 @@
 #!/bin/bash
-openscad -o top.stl top.scad
-openscad -o bottom.stl bottom.scad
+parts="top bottom"
+for part in $parts; do
+    echo "Generating $part.stl..."
+    openscad -o $part.stl $part.scad
+done
+
