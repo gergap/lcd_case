@@ -159,11 +159,11 @@ module main_pcb() {
         translate([0,0,4]) cylinder(1.5,d=3.5,center=false);
     }
     // connector
-    color("gray") translate([-PCB_WIDTH/2+45,PCB_HEIGHT/2-22,zoff-9]) {
-        pcb(21,9,9);
+    color("gray") translate([-PCB_WIDTH/2+45.5,PCB_HEIGHT/2-21.7,zoff-9]) {
+        pcb(21.3,10,9);
     }
-    color("gray") translate([-PCB_WIDTH/2+68,PCB_HEIGHT/2-22,zoff-9]) {
-        pcb(21,9,9);
+    color("gray") translate([-PCB_WIDTH/2+68.4,PCB_HEIGHT/2-21.7,zoff-9]) {
+        pcb(21.3,10,9);
     }
 
 }
