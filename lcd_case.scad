@@ -186,7 +186,7 @@ module main_pcb(cutout=0) {
         color("gray") cube([cw,ch,cd+cutout], center=false);
     }
     // rear poti
-    color("gray") translate([-PCB_WIDTH/2+17,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
+    color("gray") translate([-PCB_WIDTH/2+16.5,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
         cylinder(8+cutout,d=7,center=false);
     }
 }
