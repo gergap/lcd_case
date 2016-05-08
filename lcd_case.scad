@@ -70,6 +70,12 @@ module rounded_cube(w, h, d) {
 module nut_trap(w = 5.5, h = 3) {
     cylinder(r = w / 2 / cos(180 / 6) + delta, h=h+2*delta, $fn=6, center=true);
 }
+// x/y centered, z=0
+module nut_trap_phase(w=5.5, h=0.5) {
+    w2=w+2*h;
+    translate([0,0,h]) rotate([180,0,0]) linear_extrude(height=h, center=false, scale=w2/w)
+        circle(r = w / 2 / cos(180 / 6) + delta, $fn=6);
+}
 
 // nut trap cube: x/y centered, z_bottom=0
 module nut_trap_cube(W=10, H=6) {
