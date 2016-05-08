@@ -20,6 +20,10 @@ $fn=20;
 // radius for rounded corners
 ROUNDED_RADIUS=5;
 border_height=2;
+// SDCARD HOLDER
+SD_HOLDER_WIDTH=26;
+SD_HOLDER_HEIGHT=26.5;
+SD_HOLDER_DEPTH=3;
 // MAIN PCB
 PCB_WIDTH=150;
 PCB_HEIGHT=55.3;
@@ -94,8 +98,8 @@ module bottom() {
             translate([0,0,BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, BOTTOM_HEIGHT);
             translate([0,0,BOTTOM_HEIGHT-border_height+ETA]) bottom_border();
             // sd card cutout
-            cutoff_depth=3+ETA;
-            translate([-WIDTH/2,0,BOTTOM_WALL_THICKNESS+PCB_MOUNT_HEIGHT+cutoff_depth/2]) cube([20,25,cutoff_depth], center=true);
+            translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,BOTTOM_HEIGHT-SD_HOLDER_DEPTH+ETA]) 
+                 cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
         }
         // PCB mounting nut traps
         xoff=PCB_WIDTH/2-PCB_HOLE_OFFSET;
@@ -135,7 +139,7 @@ module pcb(w,h,d) {
 
 function main_pcb_z_offset() = BOTTOM_WALL_THICKNESS+PCB_MOUNT_HEIGHT+ETA;
 
-module main_pcb() {
+module main_pcb(cutout=0) {
     xoff=PCB_WIDTH/2-PCB_HOLE_OFFSET;
     yoff=PCB_HEIGHT/2-PCB_HOLE_OFFSET;
     zoff=main_pcb_z_offset();
@@ -158,6 +162,10 @@ module main_pcb() {
         pcb(6,6,4);
         translate([0,0,4]) cylinder(1.5,d=3.5,center=false);
     }
+    // sd card holder
+    color("gray") translate([-PCB_WIDTH/2,8.4-PCB_HEIGHT/2,zoff-SD_HOLDER_DEPTH]) {
+        cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
+    }
     // connectors
     cw=21.3; // connector width
     ch=10;   // connector height
@@ -166,14 +174,14 @@ module main_pcb() {
     cx2=68.8; // connector2 x offset
     cy=21.7; // connector y offset
     translate([-PCB_WIDTH/2+cx1,PCB_HEIGHT/2-ch-cy,zoff-cd]) {
-        color("gray") cube([cw,ch,cd], center=false);
+        color("gray") cube([cw,ch,cd+cutout], center=false);
     }
     translate([-PCB_WIDTH/2+cx2,PCB_HEIGHT/2-ch-cy,zoff-cd]) {
-        color("gray") cube([cw,ch,cd], center=false);
+        color("gray") cube([cw,ch,cd+cutout], center=false);
     }
     // rear poti
-    color("gray") translate([-PCB_WIDTH/2+17,PCB_HEIGHT/2-14.2,zoff-7]) {
-        cylinder(8,d=7,center=false);
+    color("gray") translate([-PCB_WIDTH/2+17,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
+        cylinder(8+cutout,d=7,center=false);
     }
 }
 
@@ -207,8 +215,8 @@ module lcd() {
 }
 
 // complete LCD display including PCB
-module lcd_display() {
-    main_pcb();
+module lcd_display(cutout=0) {
+    main_pcb(cutout);
     lcd_pcb();
     lcd();
 }
@@ -217,7 +225,7 @@ module lcd_display() {
 module bottom_stl() {
     difference() {
         bottom();
-        translate([0,PCB_OFFSET_Y,0]) lcd_display();
+        translate([0,PCB_OFFSET_Y,0]) lcd_display(1);
     }
 }
 if (show_bottom) {
