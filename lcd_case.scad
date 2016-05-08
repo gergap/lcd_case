@@ -123,12 +123,15 @@ module bottom() {
 }
 
 module top() {
-    translate([0,0,BOTTOM_HEIGHT]) union() {
-        difference() {
+    translate([0,0,BOTTOM_HEIGHT]) difference() {
+        union() {
             rounded_cube(WIDTH, HEIGHT, TOP_HEIGHT);
-            translate([0,0,-BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, TOP_HEIGHT);
+            translate([0,0,-border_height+ETA]) bottom_border();
         }
-        translate([0,0,-border_height+ETA]) bottom_border();
+        translate([0,0,-BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, TOP_HEIGHT);
+        // sd card cutout
+        translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,-border_height-ETA]) 
+            cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
     }
 }
 
