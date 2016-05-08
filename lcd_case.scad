@@ -132,6 +132,12 @@ module top() {
         // sd card cutout
         translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,-border_height-ETA]) 
             cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
+        // beeper holes
+        translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,TOP_HEIGHT-5]) {
+            cylinder(10,d=1,center=false);
+            translate([-3,0,0]) cylinder(10,d=1,center=false);
+            translate([3,0,0]) cylinder(10,d=1,center=false);
+        }
     }
 }
 
