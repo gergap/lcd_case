@@ -189,6 +189,10 @@ module main_pcb(cutout=0) {
     color("gray") translate([-PCB_WIDTH/2+16.5,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
         cylinder(8+cutout,d=7,center=false);
     }
+    // rear transistor
+    color("gray") translate([-PCB_WIDTH/2+75.5,PCB_HEIGHT/2-14.2,zoff-7-cutout]) {
+        cylinder(7+cutout,d=5,center=false);
+    }
 }
 
 function lcd_pcb_z_offset() = main_pcb_z_offset() + PCB_THICKNESS + 2.5 + ETA;
