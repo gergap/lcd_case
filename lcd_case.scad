@@ -98,7 +98,7 @@ module bottom() {
             translate([0,0,BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, BOTTOM_HEIGHT);
             translate([0,0,BOTTOM_HEIGHT-border_height+ETA]) bottom_border();
             // sd card cutout
-            translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,BOTTOM_HEIGHT-SD_HOLDER_DEPTH+ETA]) 
+            translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,main_pcb_z_offset()-SD_HOLDER_DEPTH]) 
                  cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
         }
         // PCB mounting nut traps
@@ -129,9 +129,6 @@ module top() {
             translate([0,0,-border_height+ETA]) bottom_border();
         }
         translate([0,0,-BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, TOP_HEIGHT);
-        // sd card cutout
-        translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,-border_height-ETA]) 
-            cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
         // beeper holes
         translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,TOP_HEIGHT-5]) {
             cylinder(10,d=1,center=false);
