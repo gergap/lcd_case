@@ -8,7 +8,7 @@ nut_height=3;
 delta=0.1; // make it a little bigger
 // case size
 WIDTH=158; // x-dir
-HEIGHT=85; // y-dir
+HEIGHT=82; // y-dir
 DEPTH=22;  // z-dir
 BOTTOM_WALL_THICKNESS=2;
 TOP_WALL_THICKNESS=2;
@@ -16,7 +16,7 @@ BOTTOM_HEIGHT=10;
 PCB_MOUNT_HEIGHT=5; // + BOTTOM_WALL_THICKNESS
 TOP_HEIGHT=DEPTH-BOTTOM_HEIGHT;
 ETA=0.05;
-$fn=20;
+$fn=40;
 // radius for rounded corners
 ROUNDED_RADIUS=5;
 border_height=2;
@@ -47,7 +47,7 @@ LCD_OFFSET_X=0.8;
 LCD_OFFSET_Y=10.2;
 
 // set to 1 for explode view, 0 otherwise
-explode=1;
+explode=0;
 show_top=1;
 show_bottom=1;
 // set to 1 to display LCD and PCB, 0 otherwise
@@ -77,6 +77,14 @@ module nut_trap_phase(w=5.5, h=0.5) {
         circle(r = w / 2 / cos(180 / 6) + delta, $fn=6);
 }
 
+// phased nut trap at the xy plane
+// this contains a phased cutout which always makes sense when making nut traps
+// on the heat bed
+module phased_nut_trap(w=5.5, h=4) {
+    translate([0,0,h/2]) nut_trap(w, h);
+    nut_trap_phase(w, 1);
+}
+
 // nut trap cube: x/y centered, z_bottom=0
 module nut_trap_cube(W=10, H=6) {
     translate([0,0,H/2]) difference() {
@@ -97,49 +105,97 @@ module bottom_border() {
 }
 
 module bottom() {
+    // PCB mounting nut traps
+    xoff=PCB_WIDTH/2-PCB_HOLE_OFFSET;
+    yoff=PCB_HEIGHT/2-PCB_HOLE_OFFSET;
+    // TOP mounting nut traps
+    xoff2=WIDTH/2-7;
+    yoff2=HEIGHT/2-7;
 
-    union() {
-        difference() {
-            rounded_cube(WIDTH, HEIGHT, BOTTOM_HEIGHT);
-            translate([0,0,BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, BOTTOM_HEIGHT);
-            translate([0,0,BOTTOM_HEIGHT-border_height+ETA]) bottom_border();
-            // sd card cutout
-            translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,main_pcb_z_offset()-SD_HOLDER_DEPTH]) 
-                 cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
+    difference() {
+        union() {
+            difference() {
+                rounded_cube(WIDTH, HEIGHT, BOTTOM_HEIGHT);
+                translate([0,0,BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, BOTTOM_HEIGHT);
+                translate([0,0,BOTTOM_HEIGHT-border_height+ETA]) bottom_border();
+                // sd card cutout
+                translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,main_pcb_z_offset()-SD_HOLDER_DEPTH]) 
+                    cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
+            }
+            translate([0,PCB_OFFSET_Y,3.5]) {
+                translate([-xoff,-yoff,0]) cube([8,8,7], center=true);
+                translate([ xoff,-yoff,0]) cube([8,8,7], center=true);
+                translate([-xoff, yoff,0]) cube([8,8,7], center=true);
+                translate([ xoff, yoff,0]) cube([8,8,7], center=true);
+            }
+            translate([0,PCB_OFFSET_Y,5]) {
+                translate([-xoff2,-yoff2,0]) cube([8,8,10], center=true);
+                translate([ xoff2,-yoff2,0]) cube([8,8,10], center=true);
+                translate([-xoff2, yoff2,0]) cube([8,8,10], center=true);
+                translate([ xoff2, yoff2,0]) cube([8,8,10], center=true);
+            }
         }
-        // PCB mounting nut traps
-        xoff=PCB_WIDTH/2-PCB_HOLE_OFFSET;
-        yoff=PCB_HEIGHT/2-PCB_HOLE_OFFSET;
-        translate([0,PCB_OFFSET_Y,BOTTOM_WALL_THICKNESS]) {
-            translate([-xoff,-yoff,0]) rotate([0,0,90]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
-            translate([ xoff,-yoff,0]) rotate([0,0,-90]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
-            translate([-xoff, yoff,0]) rotate([0,0,90]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
-            translate([ xoff, yoff,0]) rotate([0,0,-90]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
+        // PCB mount nut traps
+        translate([0,PCB_OFFSET_Y,-ETA]) {
+            translate([-xoff2,-yoff2,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
+            translate([ xoff2,-yoff2,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
+            translate([-xoff2, yoff2,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
+            translate([ xoff2, yoff2,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
         }
-        // TOP mounting nut traps
-        xoff2=WIDTH/2-15;
-        yoff2=HEIGHT/2-7;
-        translate([0,PCB_OFFSET_Y,BOTTOM_WALL_THICKNESS]) {
-            translate([-xoff2,-yoff2,0]) rotate([0,0,180]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
-            translate([ xoff2,-yoff2,0]) rotate([0,0,180]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
-            translate([-xoff2, yoff2,0]) rotate([0,0,0]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
-            translate([ xoff2, yoff2,0]) rotate([0,0,0]) nut_trap_cube(10, PCB_MOUNT_HEIGHT);
+        // TOP mount nut traps
+        translate([0,PCB_OFFSET_Y,-ETA]) {
+            translate([-xoff,-yoff,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
+            translate([ xoff,-yoff,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
+            translate([-xoff, yoff,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
+            translate([ xoff, yoff,0]) { phased_nut_trap(); cylinder(12+ETA,d=screw_diam+delta, center=false); }
         }
     }
 }
 
+/* Screw:
+ * d1: screw diameter
+ * d2: screw head diameter
+ * h : head height
+ * l : screw length
+ */
+module screw(d1,d2,h,l) {
+    cylinder(h=l+ETA,d=d1+delta, center=false);
+    translate([0,0,l]) cylinder(h=h+delta,d=d2+delta, center=false);
+}
+
 module top() {
-    translate([0,0,BOTTOM_HEIGHT]) difference() {
+    // TOP mounting nut traps
+    xoff2=WIDTH/2-7;
+    yoff2=HEIGHT/2-7;
+
+    difference() {
         union() {
-            rounded_cube(WIDTH, HEIGHT, TOP_HEIGHT);
-            translate([0,0,-border_height+ETA]) bottom_border();
+            translate([0,0,BOTTOM_HEIGHT]) difference() {
+                union() {
+                    rounded_cube(WIDTH, HEIGHT, TOP_HEIGHT);
+                    translate([0,0,-border_height+ETA]) bottom_border();
+                }
+                translate([0,0,-BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, TOP_HEIGHT);
+            }
+            translate([0,PCB_OFFSET_Y,DEPTH-TOP_WALL_THICKNESS-5+ETA]) {
+                translate([-xoff2,-yoff2,0]) { cube(10,10,10, center=true); }
+                translate([ xoff2,-yoff2,0]) { cube(10,10,10, center=true); }
+                translate([-xoff2, yoff2,0]) { cube(10,10,10, center=true); }
+                translate([ xoff2, yoff2,0]) { cube(10,10,10, center=true); }
+            }
         }
-        translate([0,0,-BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, TOP_HEIGHT);
         // beeper holes
         translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,TOP_HEIGHT-5]) {
             cylinder(10,d=1,center=false);
             translate([-3,0,0]) cylinder(10,d=1,center=false);
             translate([3,0,0]) cylinder(10,d=1,center=false);
+        }
+        // TOP mount holes
+        translate([0,PCB_OFFSET_Y,DEPTH-22.3+ETA]) {
+            translate([-xoff2,-yoff2,0]) { screw(screw_diam, 5.4, 2.3, 20); }
+            translate([ xoff2,-yoff2,0]) { screw(screw_diam, 5.4, 2.3, 20); }
+            translate([-xoff2, yoff2,0]) { screw(screw_diam, 5.4, 2.3, 20); }
+            translate([ xoff2, yoff2,0]) { screw(screw_diam, 5.4, 2.3, 20); }
         }
     }
 }
@@ -263,6 +319,4 @@ if (show_top) {
 if (show_lcd) {
     translate([0,PCB_OFFSET_Y,0]) lcd_display();
 }
-
-//translate([0,0,20]) nut_trap_cube();
 
