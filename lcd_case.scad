@@ -7,7 +7,7 @@ nut_diam=5.5;
 nut_height=3;
 delta=0.1; // make it a little bigger
 // case size
-WIDTH=157; // x-dir
+WIDTH=158; // x-dir
 HEIGHT=85; // y-dir
 DEPTH=22;  // z-dir
 BOTTOM_WALL_THICKNESS=2;
