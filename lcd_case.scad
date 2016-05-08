@@ -148,7 +148,7 @@ module main_pcb() {
     }
     // beeper
     color("gray") translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,zoff+PCB_THICKNESS]) cylinder(9.3,r=6,center=false);
-    // poti
+    // front knob
     color("gray") translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-30,zoff+PCB_THICKNESS]) {
         pcb(12,12,4.2);
         translate([0,0,4.2]) cylinder(25,d=6.1,center=false);
@@ -158,14 +158,23 @@ module main_pcb() {
         pcb(6,6,4);
         translate([0,0,4]) cylinder(1.5,d=3.5,center=false);
     }
-    // connector
-    color("gray") translate([-PCB_WIDTH/2+45.5,PCB_HEIGHT/2-21.7,zoff-9]) {
-        pcb(21.3,10,9);
+    // connectors
+    cw=21.3; // connector width
+    ch=10;   // connector height
+    cd=9;    // connector depth
+    cx1=45.5; // connector1 x offset
+    cx2=68.8; // connector2 x offset
+    cy=21.7; // connector y offset
+    translate([-PCB_WIDTH/2+cx1,PCB_HEIGHT/2-ch-cy,zoff-cd]) {
+        color("gray") cube([cw,ch,cd], center=false);
     }
-    color("gray") translate([-PCB_WIDTH/2+68.4,PCB_HEIGHT/2-21.7,zoff-9]) {
-        pcb(21.3,10,9);
+    translate([-PCB_WIDTH/2+cx2,PCB_HEIGHT/2-ch-cy,zoff-cd]) {
+        color("gray") cube([cw,ch,cd], center=false);
     }
-
+    // rear poti
+    color("gray") translate([-PCB_WIDTH/2+17,PCB_HEIGHT/2-14.2,zoff-7]) {
+        cylinder(8,d=7,center=false);
+    }
 }
 
 function lcd_pcb_z_offset() = main_pcb_z_offset() + PCB_THICKNESS + 2.5 + ETA;
