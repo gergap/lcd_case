@@ -185,7 +185,7 @@ module top() {
             }
         }
         // beeper holes
-        translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,TOP_HEIGHT-5]) {
+        translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,DEPTH-5]) {
             cylinder(10,d=1,center=false);
             translate([-3,0,0]) cylinder(10,d=1,center=false);
             translate([3,0,0]) cylinder(10,d=1,center=false);
