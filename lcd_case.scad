@@ -30,7 +30,7 @@ PCB_HEIGHT=55.3;
 PCB_OFFSET_Y=0;
 PCB_THICKNESS=1.8;
 PCB_HOLE_RAD=1.5;
-PCB_HOLE_OFFSET=2.5;
+PCB_HOLE_OFFSET=2.54;
 // LCD PCB
 LCD_PCB_WIDTH=98.4;
 LCD_PCB_HEIGHT=60;
@@ -213,6 +213,7 @@ module main_pcb(cutout=0) {
     zoff=main_pcb_z_offset();
     color("red") translate([0,0,zoff]) difference() {
         pcb(PCB_WIDTH, PCB_HEIGHT, PCB_THICKNESS);
+        // drill holes
         translate([-xoff, -yoff, -ETA]) cylinder(PCB_THICKNESS+2*ETA, r=PCB_HOLE_RAD, center=false);
         translate([xoff, -yoff, -ETA]) cylinder(PCB_THICKNESS+2*ETA, r=PCB_HOLE_RAD, center=false);
         translate([-xoff, yoff, -ETA]) cylinder(PCB_THICKNESS+2*ETA, r=PCB_HOLE_RAD, center=false);
