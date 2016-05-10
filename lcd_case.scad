@@ -236,25 +236,25 @@ module main_pcb(cutout=0) {
         cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
     }
     // connectors
-    cw=21.3; // connector width
-    ch=10;   // connector height
-    cd=9;    // connector depth
-    cx1=45.5; // connector1 x offset
-    cx2=68.8; // connector2 x offset
-    cy=21.7; // connector y offset
+    cw=20.3+cutout; // connector width
+    ch=9+cutout;   // connector height
+    cd=9+cutout;    // connector depth
+    cx1=46-cutout/2; // connector1 x offset
+    cx2=69.3-cutout/2; // connector2 x offset
+    cy=22.2-cutout/2; // connector y offset
     translate([-PCB_WIDTH/2+cx1,PCB_HEIGHT/2-ch-cy,zoff-cd]) {
-        color("gray") cube([cw,ch,cd+cutout], center=false);
+        color("gray") cube([cw,ch,cd], center=false);
     }
     translate([-PCB_WIDTH/2+cx2,PCB_HEIGHT/2-ch-cy,zoff-cd]) {
-        color("gray") cube([cw,ch,cd+cutout], center=false);
+        color("gray") cube([cw,ch,cd], center=false);
     }
     // rear poti
     color("gray") translate([-PCB_WIDTH/2+16.5,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
-        cylinder(8+cutout,d=7,center=false);
+        cylinder(8+cutout,d=7+cutout,center=false);
     }
     // rear transistor
     color("gray") translate([-PCB_WIDTH/2+75.5,PCB_HEIGHT/2-14.2,zoff-7-cutout]) {
-        cylinder(7+cutout,d=5,center=false);
+        cylinder(7+cutout,d=5+cutout,center=false);
     }
 }
 
