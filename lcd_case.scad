@@ -23,10 +23,10 @@ border_height=2;
 // SDCARD HOLDER
 SD_HOLDER_WIDTH=26;
 SD_HOLDER_HEIGHT=26.5;
-SD_HOLDER_DEPTH=3;
+SD_HOLDER_DEPTH=3.2;
 // MAIN PCB
 PCB_WIDTH=150;
-PCB_HEIGHT=55.3;
+PCB_HEIGHT=54.8;
 PCB_OFFSET_Y=0;
 PCB_THICKNESS=1.8;
 PCB_HOLE_RAD=1.5;
@@ -119,7 +119,7 @@ module bottom() {
                 translate([0,0,BOTTOM_WALL_THICKNESS]) rounded_cube(WIDTH-6, HEIGHT-6, BOTTOM_HEIGHT);
                 translate([0,0,BOTTOM_HEIGHT-border_height+ETA]) bottom_border();
                 // sd card cutout
-                translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,main_pcb_z_offset()-SD_HOLDER_DEPTH]) 
+                translate([-WIDTH/2-SD_HOLDER_WIDTH/2,8.4-PCB_HEIGHT/2,main_pcb_z_offset()-SD_HOLDER_DEPTH+0.2]) 
                     cube([SD_HOLDER_WIDTH,SD_HOLDER_HEIGHT,SD_HOLDER_DEPTH], center=false);
             }
             translate([0,PCB_OFFSET_Y,3.5]) {
@@ -186,9 +186,9 @@ module top() {
         }
         // beeper holes
         translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,DEPTH-5]) {
-            cylinder(10,d=1,center=false);
-            translate([-3,0,0]) cylinder(10,d=1,center=false);
-            translate([3,0,0]) cylinder(10,d=1,center=false);
+            cylinder(10,d=2,center=false);
+            translate([-3,0,0]) cylinder(10,d=2,center=false);
+            translate([3,0,0]) cylinder(10,d=2,center=false);
         }
         // TOP mount holes
         translate([0,PCB_OFFSET_Y,DEPTH-22.3+ETA]) {
@@ -220,14 +220,14 @@ module main_pcb(cutout=0) {
         translate([xoff, yoff, -ETA]) cylinder(PCB_THICKNESS+2*ETA, r=PCB_HOLE_RAD, center=false);
     }
     // beeper
-    color("gray") translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-10,zoff+PCB_THICKNESS]) cylinder(9.3,r=6,center=false);
+    color("gray") translate([PCB_WIDTH/2-12,PCB_HEIGHT/2-10,zoff+PCB_THICKNESS]) cylinder(9.3,r=6,center=false);
     // front knob
-    color("gray") translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-30,zoff+PCB_THICKNESS]) {
+    color("gray") translate([PCB_WIDTH/2-12,PCB_HEIGHT/2-29,zoff+PCB_THICKNESS]) {
         pcb(12,12,4.2);
-        translate([0,0,4.2]) cylinder(25,d=6.1,center=false);
+        translate([0,0,4.2]) cylinder(25,d=6.1+cutout,center=false);
     }
     // reset button
-    color("gray") translate([PCB_WIDTH/2-13,PCB_HEIGHT/2-47,zoff+PCB_THICKNESS]) {
+    color("gray") translate([PCB_WIDTH/2-12,PCB_HEIGHT/2-47,zoff+PCB_THICKNESS]) {
         pcb(6,6,4);
         translate([0,0,4]) cylinder(1.5,d=3.5,center=false);
     }
@@ -249,7 +249,7 @@ module main_pcb(cutout=0) {
         color("gray") cube([cw,ch,cd], center=false);
     }
     // rear poti
-    color("gray") translate([-PCB_WIDTH/2+16.5,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
+    color("gray") translate([-PCB_WIDTH/2+17,PCB_HEIGHT/2-14.2,zoff-8-cutout]) {
         cylinder(8+cutout,d=7+cutout,center=false);
     }
     // rear transistor
@@ -260,7 +260,7 @@ module main_pcb(cutout=0) {
 
 function lcd_pcb_z_offset() = main_pcb_z_offset() + PCB_THICKNESS + 2.5 + ETA;
 
-module lcd_pcb() {
+module lcd_pcb(cutout) {
     xoff=(LCD_PCB_WIDTH-PCB_WIDTH)/2+LCD_PCB_OFFSET_X;
     yoff=(PCB_HEIGHT-LCD_PCB_HEIGHT)/2-LCD_PCB_OFFSET_Y;
     zoff=lcd_pcb_z_offset();
@@ -280,18 +280,18 @@ module lcd_pcb() {
 
 // the LCD module
 function lcd_z_offset() = lcd_pcb_z_offset() + PCB_THICKNESS + ETA;
-module lcd() {
+module lcd(cutout) {
     xoff=(LCD_WIDTH-PCB_WIDTH)/2+LCD_PCB_OFFSET_X+LCD_OFFSET_X;
     yoff=(PCB_HEIGHT-LCD_HEIGHT)/2-LCD_PCB_OFFSET_Y-LCD_OFFSET_Y;
     zoff=lcd_z_offset();
-    color("gray") translate([xoff,yoff,zoff]) pcb(LCD_WIDTH, LCD_HEIGHT, LCD_THICKNESS);
+    color("gray") translate([xoff,yoff,zoff]) pcb(LCD_WIDTH+cutout, LCD_HEIGHT+cutout, LCD_THICKNESS);
 }
 
 // complete LCD display including PCB
 module lcd_display(cutout=0) {
     main_pcb(cutout);
-    lcd_pcb();
-    lcd();
+    lcd_pcb(cutout);
+    lcd(cutout);
 }
 
 // bottom part
@@ -309,7 +309,7 @@ if (show_bottom) {
 module top_stl() {
     difference() {
         top();
-        translate([0,PCB_OFFSET_Y,0]) lcd_display();
+        translate([0,PCB_OFFSET_Y,0]) lcd_display(1);
     }
 }
 if (show_top) {
