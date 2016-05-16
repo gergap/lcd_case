@@ -1,5 +1,5 @@
-This designed is based on http://www.thingiverse.com/thing:35438,
-nut I redisgned it using OpenSCAD to fit it to my needs.
+This design is based on http://www.thingiverse.com/thing:35438,
+nut I redesigned it using OpenSCAD to fit it to my needs.
 
 You can use ./gen.sh to generate the STL files.
 Of course you will need OpenSCAD for this.
