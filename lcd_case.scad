@@ -47,7 +47,7 @@ LCD_OFFSET_X=0.8;
 LCD_OFFSET_Y=10.2;
 
 // set to 1 for explode view, 0 otherwise
-explode=0;
+explode=1;
 show_top=1;
 show_bottom=1;
 // set to 1 to display LCD and PCB, 0 otherwise
