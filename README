@@ -4,3 +4,8 @@ nut I redisgned it using OpenSCAD to fit it to my needs.
 You can use ./gen.sh to generate the STL files.
 Of course you will need OpenSCAD for this.
 
+This was designed for the "[Sintron] 2004 LCD Smart Display Controller Module
+with Adapter for 3D Printer Controller RAMPS 1.4 Arduino Mega Pololu Shield
+Arduino RepRap".
+Link: http://www.amazon.de/Sintron-Display-Controller-Adapter-Printer/dp/B00K6KCYEE?ie=UTF8&psc=1&redirect=true&ref_=oh_aui_detailpage_o04_s00
+
